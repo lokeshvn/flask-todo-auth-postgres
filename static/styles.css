@@ -1,0 +1,17 @@
+body {
+    background-color: #f5f7fb;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.todo-title-done {
+    text-decoration: line-through;
+    color: #b91919;
+}
