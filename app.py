@@ -24,11 +24,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-app.secret_key = 'change-this-secret'  # near top, after app = Flask(__name__)
+# app.secret_key = 'change-this-secret'  # near top, after app = Flask(__name__)
 
+# Read from env on Render, fall back to local values
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret')
 
 # 1) Configure SQLAlchemy to use your PostgreSQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2503@localhost:5432/tododb'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2503@localhost:5432/tododb'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://postgres:2503@localhost:5432/tododb'
+)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # just disables a warning
 
 # 2) Create a SQLAlchemy object, tied to this app
@@ -202,7 +210,7 @@ def delete_todo(todo_id):
     if todo.user_id != current_user.id:
         flash("Not allowed.")
         return redirect(url_for('hello'))
-        
+
     db.session.delete(todo)
     db.session.commit()
     return redirect(url_for('hello'))
